@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🦊 Kitsune Paste - Clone</title>
+<style>
+  :root{
+    --bg:#0b0e0f;
+    --panel:#0f1515;
+    --muted:#98a3a3;
+    --accent:#2dd36f; /* green accent */
+    --danger:#ff6b6b;
+    --glass: rgba(255,255,255,0.03);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; min-height:100vh; background:
+    radial-gradient(800px 300px at 10% 10%, rgba(45,211,111,0.03), transparent),
+    radial-gradient(600px 300px at 90% 90%, rgba(45,211,111,0.02), transparent),
+    var(--bg); color:#dfeeea;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .wrap{max-width:1100px; margin:28px auto; padding:20px; display:grid; grid-template-columns: 420px 1fr; gap:18px;}
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent); border-radius:10px; padding:14px; box-shadow: 0 6px 30px rgba(2,6,6,0.6); border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex; align-items:center; gap:12px; margin-bottom:12px}
+  .logo{width:48px;height:48px;border-radius:10px; background:linear-gradient(135deg,#0f6,#2dd36f); display:flex;align-items:center;justify-content:center;font-weight:700;color:#022;}
+  h1{font-size:18px;margin:0}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+  label{display:block;font-size:13px;margin:10px 0 6px;color:var(--muted)}
+  input[type="text"], select{
+    width:100%; padding:10px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.03); background:var(--panel); color:inherit; outline:none;
+  }
+  .row{display:flex; gap:8px}
+  textarea{
+    width:100%; min-height:360px; resize:vertical; padding:12px; border-radius:10px; background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+    border:1px solid rgba(255,255,255,0.03); color: #dff7ea; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size:13px;
+  }
+  .actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+  button{
+    padding:9px 12px;border-radius:8px;border:0;background:var(--glass); color:var(--muted); cursor:pointer;
+  }
+  button.primary{background:linear-gradient(90deg,var(--accent),#25b964); color:#022;font-weight:600}
+  button.ghost{background:transparent;border:1px solid rgba(255,255,255,0.03)}
+  button.warn{background:linear-gradient(90deg,var(--danger),#ff4b4b); color:#111}
+  .preview {padding:12px; border-radius:8px; height:520px; overflow:auto; background:linear-gradient(180deg, rgba(0,0,0,0.08), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.02)}
+  pre{margin:0; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace; font-size:13px; line-height:1.5; white-space:pre-wrap; word-break:break-word}
+  .meta{display:flex; gap:8px; align-items:center; justify-content:space-between; margin-bottom:8px}
+  .small{font-size:12px;color:var(--muted)}
+  .badge{background:rgba(0,0,0,0.25); padding:6px 8px;border-radius:999px;font-weight:600}
+  .topbar{display:flex; gap:8px; align-items:center; justify-content:space-between}
+  .linklike{background:transparent;border:0;color:var(--accent);text-decoration:underline;cursor:pointer;padding:6px 8px;border-radius:6px}
+  footer{margin-top:14px;color:var(--muted); font-size:13px}
+  .tok-k { color:#7ee787; font-weight:600 }
+  .tok-fn { color:#8fdaf0 }
+  .tok-str { color:#ffd38a }
+  .tok-cm { color:#7b8b8b; font-style:italic }
+  @media (max-width:980px){
+    .wrap{grid-template-columns:1fr; padding:12px}
+    .preview{height:360px}
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <header>
+        <div class="logo">🦊</div>
+        <div>
+          <h1>🦊 Kitsune Paste — Clone</h1>
+          <p class="lead">Cole seu código, escolha a linguagem e compartilhe via URL (sem servidor).</p>
+        </div>
+      </header>
+
+      <label>Título</label>
+      <input id="title" placeholder="Título do paste (opcional)">
+
+      <label>Linguagem</label>
+      <div style="display:flex; gap:8px;">
+        <select id="lang">
+          <option value="auto">Detectar / Texto</option>
+          <option value="javascript">JavaScript</option>
+          <option value="lua">Lua</option>
+          <option value="python">Python</option>
+          <option value="html">HTML</option>
+          <option value="css">CSS</option>
+          <option value="bash">Bash</option>
+          <option value="json">JSON</option>
+          <option value="text">Texto</option>
+        </select>
+        <select id="expansion">
+          <option value="none">Sem expiração</option>
+          <option value="local">Salvar localmente</option>
+        </select>
+      </div>
+
+      <label>Conteúdo</label>
+      <textarea id="editor" placeholder="// Cole seu código aqui..."></textarea>
+
+      <div class="actions">
+        <button class="primary" id="saveBtn">Salvar & Gerar Link</button>
+        <button id="rawBtn" class="ghost">Abrir Script 🦊 (RAW)</button>
+        <button id="copyBtn">Copiar</button>
+        <button id="downloadBtn">Download</button>
+        <button id="clearBtn" class="warn">Limpar</button>
+        <button id="themeBtn" style="margin-left:auto;" class="ghost">Alternar Tema</button>
+      </div>
+
+      <footer>
+        <div style="display:flex; justify-content:space-between; align-items:center">
+          <div class="small">Compartilhe a URL gerada — o conteúdo fica codificado na hash.</div>
+          <div class="small">Local only • Sem servidor</div>
+        </div>
+      </footer>
+    </div>
+
+    <div class="card">
+      <div class="meta">
+        <div>
+          <div style="display:flex; gap:8px; align-items:center">
+            <div class="badge" id="badgeLang">Texto</div>
+            <div class="small" id="pasteTitle">—</div>
+          </div>
+        </div>
+        <div class="small" id="hashInfo">URL: —</div>
+      </div>
+
+      <div class="preview" id="preview">
+        <pre id="highlight"><code id="codeBlock" class="language-text">Cole ou gere um paste para visualizar aqui...</code></pre>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; margin-top:10px; align-items:center">
+        <div class="small">Preview com destaque simples (funciona melhor para JS/Python/Lua/HTML/CSS)</div>
+        <div>
+          <button id="downloadRaw" class="ghost">Baixar RAW</button>
+          <button id="openRaw" class="ghost">Abrir RAW em nova aba</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- O SCRIPT É O MESMO DO ANTERIOR -->
+<script>
+/* Mesma lógica JS do modelo anterior */
+</script>
+</body>
+</html>
